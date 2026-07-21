@@ -49,17 +49,19 @@ function renderStudents() {
   tbody.innerHTML = '';
 
   if (!students.length) {
-    tbody.innerHTML = '<tr><td colspan="5">No students registered yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6">No students registered yet.</td></tr>';
     return;
   }
 
   students.forEach((student, idx) => {
     const row = document.createElement('tr');
+    const location = [student.district, student.sector, student.cell, student.village].filter(Boolean).join(' / ');
     row.innerHTML = `
       <td>${student.name}</td>
       <td>${student.className}</td>
       <td>${student.parentName}</td>
       <td>${student.parentPhone}</td>
+      <td>${location}</td>
       <td>
         <button class="action-btn edit" data-index="${idx}">Edit</button>
         <button class="action-btn delete" data-index="${idx}">Delete</button>
@@ -149,11 +151,15 @@ function registerStudent(event) {
     gender: document.getElementById('gender').value,
     parentName: document.getElementById('parentName').value.trim(),
     parentPhone: document.getElementById('parentPhone').value.trim(),
-    address: document.getElementById('address').value.trim()
+    district: (document.getElementById('district') && document.getElementById('district').value.trim()) || '',
+    sector: (document.getElementById('sector') && document.getElementById('sector').value.trim()) || '',
+    cell: (document.getElementById('cell') && document.getElementById('cell').value.trim()) || '',
+    village: (document.getElementById('village') && document.getElementById('village').value.trim()) || '',
+    address: (document.getElementById('address') && document.getElementById('address').value.trim()) || ''
   };
 
-  if (!student.name || !student.className || !student.dob || !student.gender || !student.parentName || !student.parentPhone || !student.address) {
-    showMessage('Please complete all student fields.', true);
+  if (!student.name || !student.className || !student.dob || !student.gender || !student.parentName || !student.parentPhone) {
+    showMessage('Please complete all required student fields.', true);
     return;
   }
 
@@ -162,8 +168,10 @@ function registerStudent(event) {
   if (typeof window._editingIndex === 'number' && window._editingIndex >= 0) {
     students[window._editingIndex] = student;
     window._editingIndex = -1;
-    document.getElementById('studentSubmitBtn').textContent = 'Register Student';
-    document.getElementById('cancelEditBtn').classList.add('hidden');
+    const submitBtn = document.getElementById('studentSubmitBtn');
+    if (submitBtn) submitBtn.textContent = 'Register Student';
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    if (cancelBtn) cancelBtn.classList.add('hidden');
     showMessage('Student updated successfully.');
   } else {
     students.push(student);
@@ -171,7 +179,8 @@ function registerStudent(event) {
   }
   saveStudents(students);
   renderStudents();
-  document.getElementById('studentForm').reset();
+  const form = document.getElementById('studentForm');
+  if (form) form.reset();
 }
 
 function startEdit(index) {
@@ -185,7 +194,11 @@ function startEdit(index) {
   document.getElementById('gender').value = s.gender;
   document.getElementById('parentName').value = s.parentName;
   document.getElementById('parentPhone').value = s.parentPhone;
-  document.getElementById('address').value = s.address;
+  if (document.getElementById('district')) document.getElementById('district').value = s.district || '';
+  if (document.getElementById('sector')) document.getElementById('sector').value = s.sector || '';
+  if (document.getElementById('cell')) document.getElementById('cell').value = s.cell || '';
+  if (document.getElementById('village')) document.getElementById('village').value = s.village || '';
+  if (document.getElementById('address')) document.getElementById('address').value = s.address || '';
   document.getElementById('studentSubmitBtn').textContent = 'Save Changes';
   document.getElementById('cancelEditBtn').classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
