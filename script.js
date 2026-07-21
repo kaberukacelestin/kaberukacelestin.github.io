@@ -49,17 +49,21 @@ function renderStudents() {
   tbody.innerHTML = '';
 
   if (!students.length) {
-    tbody.innerHTML = '<tr><td colspan="4">No students registered yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5">No students registered yet.</td></tr>';
     return;
   }
 
-  students.forEach((student) => {
+  students.forEach((student, idx) => {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${student.name}</td>
       <td>${student.className}</td>
       <td>${student.parentName}</td>
       <td>${student.parentPhone}</td>
+      <td>
+        <button class="action-btn edit" data-index="${idx}">Edit</button>
+        <button class="action-btn delete" data-index="${idx}">Delete</button>
+      </td>
     `;
     tbody.appendChild(row);
   });
@@ -154,11 +158,54 @@ function registerStudent(event) {
   }
 
   const students = getStoredStudents();
-  students.push(student);
+  // editing flow: if an index is present, update instead
+  if (typeof window._editingIndex === 'number' && window._editingIndex >= 0) {
+    students[window._editingIndex] = student;
+    window._editingIndex = -1;
+    document.getElementById('studentSubmitBtn').textContent = 'Register Student';
+    document.getElementById('cancelEditBtn').classList.add('hidden');
+    showMessage('Student updated successfully.');
+  } else {
+    students.push(student);
+    showMessage('Student registered successfully.');
+  }
   saveStudents(students);
   renderStudents();
   document.getElementById('studentForm').reset();
-  showMessage('Student registered successfully.');
+}
+
+function startEdit(index) {
+  const students = getStoredStudents();
+  const s = students[index];
+  if (!s) return;
+  window._editingIndex = index;
+  document.getElementById('studentName').value = s.name;
+  document.getElementById('studentClass').value = s.className;
+  document.getElementById('dob').value = s.dob;
+  document.getElementById('gender').value = s.gender;
+  document.getElementById('parentName').value = s.parentName;
+  document.getElementById('parentPhone').value = s.parentPhone;
+  document.getElementById('address').value = s.address;
+  document.getElementById('studentSubmitBtn').textContent = 'Save Changes';
+  document.getElementById('cancelEditBtn').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEdit() {
+  window._editingIndex = -1;
+  document.getElementById('studentForm').reset();
+  document.getElementById('studentSubmitBtn').textContent = 'Register Student';
+  document.getElementById('cancelEditBtn').classList.add('hidden');
+}
+
+function deleteStudent(index) {
+  const students = getStoredStudents();
+  if (!students[index]) return;
+  if (!confirm('Delete this student?')) return;
+  students.splice(index, 1);
+  saveStudents(students);
+  renderStudents();
+  showMessage('Student deleted.');
 }
 
 function setupTabs() {
@@ -176,5 +223,13 @@ document.getElementById('adminRegisterForm').addEventListener('submit', register
 document.getElementById('adminLoginForm').addEventListener('submit', loginAdmin);
 document.getElementById('logoutButton').addEventListener('click', logoutAdmin);
 document.getElementById('studentForm').addEventListener('submit', registerStudent);
+document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+document.getElementById('studentTableBody').addEventListener('click', (e) => {
+  const index = e.target.getAttribute && e.target.getAttribute('data-index');
+  if (!index) return;
+  const i = parseInt(index, 10);
+  if (e.target.classList.contains('edit')) startEdit(i);
+  if (e.target.classList.contains('delete')) deleteStudent(i);
+});
 setupTabs();
 loadDashboard();
