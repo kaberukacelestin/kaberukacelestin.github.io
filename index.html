@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>School Admin Portal</title>
+    <title>REGISTRATION  PORTAL</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -12,7 +12,7 @@
         <div class="logo-box">
           <img src="SUNRISE .png" alt="School logo" class="logo" />
         </div>
-        <h1>School Admin Portal</h1>
+        <h1>REGISTRATION  PORTAL</h1>
         <p>Register administrators and manage student registration for Nursery classes and Primary One and Two.</p>
       </section>
 
@@ -115,8 +115,30 @@
             </div>
           </div>
 
-          <label for="address">Address</label>
-          <textarea id="address" rows="3" required></textarea>
+          <div class="grid">
+            <div>
+              <label for="district">District</label>
+              <input id="district" type="text" placeholder="e.g. Gasabo" />
+            </div>
+            <div>
+              <label for="sector">Sector</label>
+              <input id="sector" type="text" placeholder="e.g. Kacyiru" />
+            </div>
+          </div>
+
+          <div class="grid">
+            <div>
+              <label for="cell">Cell</label>
+              <input id="cell" type="text" placeholder="e.g. Gisozi" />
+            </div>
+            <div>
+              <label for="village">Village</label>
+              <input id="village" type="text" placeholder="e.g. Kabeza" />
+            </div>
+          </div>
+
+          <label for="address">Address (full)</label>
+          <textarea id="address" rows="3"></textarea>
 
           <div class="form-actions">
             <button id="studentSubmitBtn" type="submit">Register Student</button>
@@ -132,8 +154,9 @@
                   <th>Student</th>
                   <th>Class</th>
                   <th>Parent</th>
-                  <th>Phone</th>
-                  <th>Actions</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="studentTableBody"></tbody>
