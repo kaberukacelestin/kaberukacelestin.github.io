@@ -159,6 +159,31 @@ td {
   border-bottom: 1px solid #e3e8ef;
 }
 
+.action-btn {
+  border: 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-right: 6px;
+}
+
+.action-btn.edit {
+  background: #0f4c81;
+  color: #fff;
+}
+
+.action-btn.delete {
+  background: #b42318;
+  color: #fff;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .hint {
   color: #667085;
   font-size: 0.95rem;
