@@ -219,17 +219,25 @@ function setupTabs() {
   });
 }
 
-document.getElementById('adminRegisterForm').addEventListener('submit', registerAdmin);
-document.getElementById('adminLoginForm').addEventListener('submit', loginAdmin);
-document.getElementById('logoutButton').addEventListener('click', logoutAdmin);
-document.getElementById('studentForm').addEventListener('submit', registerStudent);
-document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
-document.getElementById('studentTableBody').addEventListener('click', (e) => {
-  const index = e.target.getAttribute && e.target.getAttribute('data-index');
-  if (!index) return;
-  const i = parseInt(index, 10);
-  if (e.target.classList.contains('edit')) startEdit(i);
-  if (e.target.classList.contains('delete')) deleteStudent(i);
-});
+const adminRegisterForm = document.getElementById('adminRegisterForm');
+if (adminRegisterForm) adminRegisterForm.addEventListener('submit', registerAdmin);
+const adminLoginForm = document.getElementById('adminLoginForm');
+if (adminLoginForm) adminLoginForm.addEventListener('submit', loginAdmin);
+const logoutBtn = document.getElementById('logoutButton');
+if (logoutBtn) logoutBtn.addEventListener('click', logoutAdmin);
+const studentFormEl = document.getElementById('studentForm');
+if (studentFormEl) studentFormEl.addEventListener('submit', registerStudent);
+const cancelBtn = document.getElementById('cancelEditBtn');
+if (cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
+const tableBody = document.getElementById('studentTableBody');
+if (tableBody) {
+  tableBody.addEventListener('click', (e) => {
+    const index = e.target.getAttribute && e.target.getAttribute('data-index');
+    if (!index) return;
+    const i = parseInt(index, 10);
+    if (e.target.classList.contains('edit')) startEdit(i);
+    if (e.target.classList.contains('delete')) deleteStudent(i);
+  });
+}
 setupTabs();
 loadDashboard();
